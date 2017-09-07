@@ -35,7 +35,7 @@ public class KeycloakAuthenticationFilter extends org.keycloak.adapters.servlet.
 
   private static final Logger LOG = LoggerFactory.getLogger(KeycloakAuthenticationFilter.class);
 
-  private boolean keycloakDisabled;
+  private boolean keycloakEnabled;
 
   @Inject private KeycloakTokenStore kcTokenStore;
 
@@ -45,9 +45,9 @@ public class KeycloakAuthenticationFilter extends org.keycloak.adapters.servlet.
 
   @Inject
   public KeycloakAuthenticationFilter(
-      @Named(KeycloakConstants.DISABLED_SETTING) boolean keycloakDisabled) {
-    this.keycloakDisabled = keycloakDisabled;
-    if (keycloakDisabled) {
+      @Named(KeycloakConstants.ENABLED_SETTING) boolean keycloakEnabled) {
+    this.keycloakEnabled = keycloakEnabled;
+    if (!keycloakEnabled) {
       LOG.info("Keycloak is disabled");
     }
   }
@@ -55,7 +55,7 @@ public class KeycloakAuthenticationFilter extends org.keycloak.adapters.servlet.
   @Override
   public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
       throws IOException, ServletException {
-    if (keycloakDisabled) {
+    if (!keycloakEnabled) {
       chain.doFilter(req, res);
       return;
     }

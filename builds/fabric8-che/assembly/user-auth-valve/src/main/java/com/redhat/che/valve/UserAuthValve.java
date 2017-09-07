@@ -10,7 +10,7 @@
  */
 package com.redhat.che.valve;
 
-import static com.redhat.che.keycloak.shared.KeycloakConstants.DISABLED_SETTING;
+import static com.redhat.che.keycloak.shared.KeycloakConstants.ENABLED_SETTING;
 
 import com.redhat.che.keycloak.shared.KeycloakSettings;
 import java.io.BufferedReader;
@@ -63,11 +63,11 @@ public class UserAuthValve extends KeycloakAuthenticatorValve {
     USER_VALIDATOR_ENDPOINT = CHE_API_ENDPOINT + USER_VALIDATOR_API_PATH;
   }
 
-  private Boolean keycloakDisabled = null;
+  private Boolean keycloakEnabled = null;
 
   @Override
   public boolean authenticate(Request request, HttpServletResponse response) throws IOException {
-    if (isKeycloakDisabled()) {
+    if (!isKeycloakEnabled()) {
       LOG.info("Keycloak is disabled => Bypassing authentification");
       GenericPrincipal genericPrincipal =
           new GenericPrincipal("developer", "developer", Arrays.asList("developer"));
@@ -86,13 +86,13 @@ public class UserAuthValve extends KeycloakAuthenticatorValve {
   }
 
   synchronized void retrieveKeycloakSettingsIfNecessary() {
-    if (keycloakDisabled == null) {
+    if (keycloakEnabled == null) {
       KeycloakSettings.pullFromApiEndpointIfNecessary(CHE_API_ENDPOINT);
       Map<String, String> keycloakSettings = KeycloakSettings.get();
       if (keycloakSettings == null) {
         LOG.warn("KeycloakSettings = null => don't disable Keycloak");
       } else {
-        keycloakDisabled = Boolean.parseBoolean(keycloakSettings.get(DISABLED_SETTING));
+        keycloakEnabled = Boolean.parseBoolean(keycloakSettings.get(ENABLED_SETTING));
       }
     }
   }
@@ -148,7 +148,7 @@ public class UserAuthValve extends KeycloakAuthenticatorValve {
     return ksc.getTokenString();
   }
 
-  public boolean isKeycloakDisabled() {
-    return keycloakDisabled == null ? false : keycloakDisabled;
+  public boolean isKeycloakEnabled() {
+    return keycloakEnabled == null ? false : keycloakEnabled;
   }
 }

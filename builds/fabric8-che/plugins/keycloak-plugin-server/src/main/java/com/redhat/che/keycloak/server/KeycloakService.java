@@ -36,7 +36,7 @@ public class KeycloakService extends Service {
 
   @Inject
   public KeycloakService(
-      @Named(DISABLED_SETTING) boolean keycloakDisabled,
+      @Named(ENABLED_SETTING) boolean keycloakEnabled,
       @Named(AUTH_SERVER_URL_SETTING) String serverURL,
       @Named(REALM_SETTING) String realm,
       @Named(CLIENT_ID_SETTING) String clientId,
@@ -44,7 +44,7 @@ public class KeycloakService extends Service {
       @Nullable @Named(GITHUB_ENDPOINT_SETTING) String gitHubEndpoint) {
     KeycloakSettings.set(
         ImmutableMap.<String, String>builder()
-            .put(DISABLED_SETTING, Boolean.toString(keycloakDisabled))
+            .put(ENABLED_SETTING, Boolean.toString(keycloakEnabled))
             .put(AUTH_SERVER_URL_SETTING, serverURL)
             .put(CLIENT_ID_SETTING, clientId)
             .put(REALM_SETTING, realm)

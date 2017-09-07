@@ -45,7 +45,7 @@
 +
 +  promise.then((keycloakSettings) => {
 +    console.log('keycloakSettings : ', keycloakSettings);
-+    if (keycloakSettings['che.keycloak.disabled'] == 'true') {
++    if (keycloakSettings['che.keycloak.enabled'] == 'false') {
 +      keycloakInit(true, keycloakSettings);
 +    } else {
 +      keycloakInit(false, keycloakSettings);

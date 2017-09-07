@@ -108,8 +108,8 @@ if [ "${OPENSHIFT_FLAVOR}" == "minishift" ]; then
   CHE_OPENSHIFT_PROJECT=${CHE_OPENSHIFT_PROJECT:-${DEFAULT_CHE_OPENSHIFT_PROJECT}}
   DEFAULT_OPENSHIFT_NAMESPACE_URL="${CHE_OPENSHIFT_PROJECT}.$(minishift ip).nip.io"
   OPENSHIFT_NAMESPACE_URL=${OPENSHIFT_NAMESPACE_URL:-${DEFAULT_OPENSHIFT_NAMESPACE_URL}}
-  DEFAULT_CHE_KEYCLOAK_DISABLED="true"
-  CHE_KEYCLOAK_DISABLED=${CHE_KEYCLOAK_DISABLED:-${DEFAULT_CHE_KEYCLOAK_DISABLED}}
+  DEFAULT_CHE_KEYCLOAK_ENABLED="false"
+  CHE_KEYCLOAK_ENABLED=${CHE_KEYCLOAK_ENABLED:-${DEFAULT_CHE_KEYCLOAK_ENABLED}}
   DEFAULT_CHE_DEBUGGING_ENABLED="true"
   CHE_DEBUGGING_ENABLED=${CHE_DEBUGGING_ENABLED:-${DEFAULT_CHE_DEBUGGING_ENABLED}}
 
@@ -125,8 +125,8 @@ elif [ "${OPENSHIFT_FLAVOR}" == "osio" ]; then
   CHE_OPENSHIFT_PROJECT=${CHE_OPENSHIFT_PROJECT:-${DEFAULT_CHE_OPENSHIFT_PROJECT}}
   DEFAULT_OPENSHIFT_NAMESPACE_URL="${CHE_OPENSHIFT_PROJECT}.8a09.starter-us-east-2.openshiftapps.com"
   OPENSHIFT_NAMESPACE_URL=${OPENSHIFT_NAMESPACE_URL:-${DEFAULT_OPENSHIFT_NAMESPACE_URL}}
-  DEFAULT_CHE_KEYCLOAK_DISABLED="false"
-  CHE_KEYCLOAK_DISABLED=${CHE_KEYCLOAK_DISABLED:-${DEFAULT_CHE_KEYCLOAK_DISABLED}}
+  DEFAULT_CHE_KEYCLOAK_ENABLED="true"
+  CHE_KEYCLOAK_ENABLED=${CHE_KEYCLOAK_ENABLED:-${DEFAULT_CHE_KEYCLOAK_ENABLED}}
   DEFAULT_CHE_DEBUGGING_ENABLED="false"
   CHE_DEBUGGING_ENABLED=${CHE_DEBUGGING_ENABLED:-${DEFAULT_CHE_DEBUGGING_ENABLED}}
 
@@ -136,8 +136,8 @@ elif [ "${OPENSHIFT_FLAVOR}" == "ocp" ]; then
   # ----------------------
   DEFAULT_CHE_OPENSHIFT_PROJECT="eclipse-che"
   CHE_OPENSHIFT_PROJECT=${CHE_OPENSHIFT_PROJECT:-${DEFAULT_CHE_OPENSHIFT_PROJECT}}
-  DEFAULT_CHE_KEYCLOAK_DISABLED="true"
-  CHE_KEYCLOAK_DISABLED=${CHE_KEYCLOAK_DISABLED:-${DEFAULT_CHE_KEYCLOAK_DISABLED}}
+  DEFAULT_CHE_KEYCLOAK_ENABLED="false"
+  CHE_KEYCLOAK_ENABLED=${CHE_KEYCLOAK_ENABLED:-${DEFAULT_CHE_KEYCLOAK_ENABLED}}
   DEFAULT_CHE_DEBUGGING_ENABLED="false"
   CHE_DEBUGGING_ENABLED=${CHE_DEBUGGING_ENABLED:-${DEFAULT_CHE_DEBUGGING_ENABLED}}
 
@@ -260,7 +260,7 @@ if [ "${OPENSHIFT_FLAVOR}" == "minishift" ]; then
     sed "s|    keycloak-oso-endpoint:.*|    keycloak-oso-endpoint: ${KEYCLOAK_OSO_ENDPOINT}|" | \
     sed "s|    keycloak-github-endpoint:.*|    keycloak-github-endpoint: ${KEYCLOAK_GITHUB_ENDPOINT}|" | \
     grep -v -e "tls:" -e "insecureEdgeTerminationPolicy: Redirect" -e "termination: edge" | \
-    if [ "${CHE_KEYCLOAK_DISABLED}" == "true" ]; then sed "s/    keycloak-disabled: \"false\"/    keycloak-disabled: \"true\"/" ; else cat -; fi | \
+    if [ "${CHE_KEYCLOAK_ENABLED}" == "true" ]; then sed "s/    keycloak-enabled: \"true\"/    keycloak-enabled: \"false\"/" ; else cat -; fi | \
     oc apply --force=true -f -
 elif [ "${OPENSHIFT_FLAVOR}" == "osio" ]; then
   echo "[CHE] Deploying Che on OSIO (image ${CHE_IMAGE})"
@@ -269,7 +269,7 @@ elif [ "${OPENSHIFT_FLAVOR}" == "osio" ]; then
     sed "s|    keycloak-oso-endpoint:.*|    keycloak-oso-endpoint: ${KEYCLOAK_OSO_ENDPOINT}|" | \
     sed "s|    keycloak-github-endpoint:.*|    keycloak-github-endpoint: ${KEYCLOAK_GITHUB_ENDPOINT}|" | \
     sed "s/          image:.*/          image: \"${CHE_IMAGE_SANITIZED}\"/" | \
-    if [ "${CHE_KEYCLOAK_DISABLED}" == "true" ]; then sed "s/    keycloak-disabled: \"false\"/    keycloak-disabled: \"true\"/" ; else cat -; fi | \
+    if [ "${CHE_KEYCLOAK_ENABLED}" == "true" ]; then sed "s/    keycloak-enabled: \"true\"/    keycloak-enabled: \"false\"/" ; else cat -; fi | \
     oc apply --force=true -f -
 else
   echo "[CHE] Deploying Che on OpenShift Container Platform (image ${CHE_IMAGE})"
@@ -278,7 +278,7 @@ else
     sed "s/          image:.*/          image: \"${CHE_IMAGE_SANITIZED}\"/" | \
     sed "s|    keycloak-oso-endpoint:.*|    keycloak-oso-endpoint: ${KEYCLOAK_OSO_ENDPOINT}|" | \
     sed "s|    keycloak-github-endpoint:.*|    keycloak-github-endpoint: ${KEYCLOAK_GITHUB_ENDPOINT}|" | \
-    sed "s/    keycloak-disabled:.*/    keycloak-disabled: \"${CHE_KEYCLOAK_DISABLED}\"/" | \
+    sed "s/    keycloak-enabled:.*/    keycloak-enabled: \"${CHE_KEYCLOAK_ENABLED}\"/" | \
     if [ "${CHE_LOG_LEVEL}" == "DEBUG" ]; then sed "s/    log-level: \"INFO\"/    log-level: \"DEBUG\"/" ; else cat -; fi | \
     oc apply --force=true -f -
 fi

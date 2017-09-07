@@ -22,18 +22,18 @@ import org.eclipse.che.api.core.rest.shared.dto.Link;
 @Singleton
 public class KeycloakHttpJsonRequestFactory extends DefaultHttpJsonRequestFactory {
 
-  private boolean keycloakDisabled;
+  private boolean keycloakEnabled;
 
   @Inject ServiceAccountInfoProvider serviceAccountInfoProvider;
 
   @Inject
-  public KeycloakHttpJsonRequestFactory(@Named("che.keycloak.disabled") boolean keycloakDisabled) {
-    this.keycloakDisabled = keycloakDisabled;
+  public KeycloakHttpJsonRequestFactory(@Named("che.keycloak.enabled") boolean keycloakEnabled) {
+    this.keycloakEnabled = keycloakEnabled;
   }
 
   @Override
   public HttpJsonRequest fromUrl(@NotNull String url) {
-    if (keycloakDisabled) {
+    if (!keycloakEnabled) {
       return super.fromUrl(url);
     }
     String token = serviceAccountInfoProvider.getToken();
@@ -42,7 +42,7 @@ public class KeycloakHttpJsonRequestFactory extends DefaultHttpJsonRequestFactor
 
   @Override
   public HttpJsonRequest fromLink(@NotNull Link link) {
-    if (keycloakDisabled) {
+    if (!keycloakEnabled) {
       return super.fromLink(link);
     }
     String token = serviceAccountInfoProvider.getToken();

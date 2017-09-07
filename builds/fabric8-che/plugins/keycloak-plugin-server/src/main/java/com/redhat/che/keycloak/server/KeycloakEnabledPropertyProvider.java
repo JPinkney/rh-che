@@ -15,21 +15,21 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
- * Injects the 'che.keycloak.disabled' property retrieved from the workspace master rest endpoint.
+ * Injects the 'che.keycloak.enabled' property retrieved from the workspace master rest endpoint.
  *
  * @author David Festal
  */
 @Singleton
-public class KeycloakDisabledPropertyProvider extends KeycloakPropertyProvider<Boolean> {
+public class KeycloakEnabledPropertyProvider extends KeycloakPropertyProvider<Boolean> {
 
   @Inject
-  public KeycloakDisabledPropertyProvider(KeycloakSettingsRetriever settingsRetriever) {
+  public KeycloakEnabledPropertyProvider(KeycloakSettingsRetriever settingsRetriever) {
     super(settingsRetriever);
   }
 
   @Override
   protected String propertyName() {
-    return KeycloakConstants.DISABLED_SETTING;
+    return KeycloakConstants.ENABLED_SETTING;
   }
 
   @Override

@@ -129,7 +129,7 @@ You can set different deployment options using environment variables:
 * `CHE_IMAGE_TAG`: `che-server` Docker image tag that will be used for deployment (default is `nightly-fabric8`)
 * `CHE_LOG_LEVEL`: Log level of che-server (default is `DEBUG`)
 * `CHE_DEBUGGING_ENABLED`: If set to `true` the script will create the OpenShift service to debug che-server (default is `true`)
-* `CHE_KEYCLOAK_DISABLED`: If this is set to true Keycloack authentication will be disabled (default is `true` for ocp and minishift, `false` for osio)
+* `CHE_KEYCLOAK_ENABLED`: If this is set to true Keycloak authentication will be enabled (default is `false` for ocp and minishift, `true` for osio)
 * `OPENSHIFT_NAMESPACE_URL`: The Che application hostname (default is unset for ocp, `${CHE_OPENSHIFT_PROJECT}.$(minishift ip).nip.io` for minishift, `${CHE_OPENSHIFT_PROJECT}.8a09.starter-us-east-2.openshiftapps.com` for osio)
 
 #### ocp and minishift only options

@@ -14,11 +14,8 @@ import static java.util.Collections.singletonMap;
 
 import com.google.inject.name.Names;
 import com.google.inject.servlet.ServletModule;
-import com.redhat.che.keycloak.server.KeycloakAuthServerUrlPropertyProvider;
-import com.redhat.che.keycloak.server.KeycloakAuthenticationFilter;
-import com.redhat.che.keycloak.server.KeycloakClientIdPropertyProvider;
-import com.redhat.che.keycloak.server.KeycloakDisabledPropertyProvider;
-import com.redhat.che.keycloak.server.KeycloakRealmPropertyProvider;
+import com.redhat.che.keycloak.server.*;
+import com.redhat.che.keycloak.server.KeycloakEnabledPropertyProvider;
 import com.redhat.che.keycloak.shared.KeycloakConstants;
 import com.redhat.che.keycloak.shared.ServicesKeycloakConfigResolver;
 import javax.inject.Singleton;
@@ -35,8 +32,8 @@ public class RedHatCheWsAgentServletModule extends ServletModule {
     serveRegex("^/api((?!(/(ws|eventbus)($|/.*)))/.*)").with(GuiceEverrestServlet.class);
 
     bind(Boolean.class)
-        .annotatedWith(Names.named(KeycloakConstants.DISABLED_SETTING))
-        .toProvider(KeycloakDisabledPropertyProvider.class);
+        .annotatedWith(Names.named(KeycloakConstants.ENABLED_SETTING))
+        .toProvider(KeycloakEnabledPropertyProvider.class);
     bind(String.class)
         .annotatedWith(Names.named(KeycloakConstants.AUTH_SERVER_URL_SETTING))
         .toProvider(KeycloakAuthServerUrlPropertyProvider.class);

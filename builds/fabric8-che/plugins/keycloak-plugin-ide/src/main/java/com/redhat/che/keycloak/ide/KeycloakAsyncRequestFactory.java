@@ -10,7 +10,7 @@
  */
 package com.redhat.che.keycloak.ide;
 
-import static com.redhat.che.keycloak.shared.KeycloakConstants.DISABLED_SETTING;
+import static com.redhat.che.keycloak.shared.KeycloakConstants.ENABLED_SETTING;
 
 import com.google.common.base.Preconditions;
 import com.google.gwt.http.client.RequestBuilder;
@@ -30,16 +30,16 @@ import org.eclipse.che.ide.rest.HTTPHeader;
 public class KeycloakAsyncRequestFactory extends AsyncRequestFactory {
   private final DtoFactory dtoFactory;
   private AppContext appContext;
-  private boolean keycloakDisabled = false;
+  private boolean keycloakEnabled = true;
 
   @Inject
   public KeycloakAsyncRequestFactory(DtoFactory dtoFactory, AppContext appContext) {
     super(dtoFactory);
     this.dtoFactory = dtoFactory;
     this.appContext = appContext;
-    this.keycloakDisabled =
-        isKeycloakDisabled(
-            KeycloakConstants.getEndpoint(appContext.getMasterEndpoint()), DISABLED_SETTING);
+    this.keycloakEnabled =
+        isKeycloakEnabled(
+            KeycloakConstants.getEndpoint(appContext.getMasterEndpoint()), ENABLED_SETTING);
   }
 
   @Override
@@ -47,7 +47,7 @@ public class KeycloakAsyncRequestFactory extends AsyncRequestFactory {
       RequestBuilder.Method method, String url, Object dtoBody, boolean async) {
     Preconditions.checkNotNull(method, "Request method should not be a null");
 
-    if (keycloakDisabled) {
+    if (!keycloakEnabled) {
       return super.doCreateRequest(method, url, dtoBody, async);
     }
 
@@ -87,16 +87,16 @@ public class KeycloakAsyncRequestFactory extends AsyncRequestFactory {
       console.log(message);
     }-*/;
 
-  public static native boolean isKeycloakDisabled(
-      String keycloakSettingsEndpoint, String disabledSetting) /*-{
+  public static native boolean isKeycloakEnabled(
+      String keycloakSettingsEndpoint, String enabledSetting) /*-{
       var myReq = new XMLHttpRequest();
       myReq.open('GET', '' + keycloakSettingsEndpoint, false);
       myReq.send(null);
-      var keycloakDisabled = JSON.parse(myReq.responseText);
-      if (keycloakDisabled['' + disabledSetting] != "true") {
-        return false;
-      } else {
+      var keycloakEnabled = JSON.parse(myReq.responseText);
+      if (keycloakEnabled['' + enabledSetting] != "false") {
         return true;
+      } else {
+        return false;
       }
     }-*/;
 }
